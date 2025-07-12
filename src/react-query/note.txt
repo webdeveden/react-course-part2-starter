@@ -1,0 +1,2 @@
+REACT QUERY
+=> A powerful library for managing data fetching and caching in React applications

@@ -1,2 +1,19 @@
 REACT QUERY
 => A powerful library for managing data fetching and caching in React applications
+
+it addresses the issues such as:
+- request cancellation
+- automatic refresh
+- cashing
+- retries
+
+=> installing react query:
+
+npm i @tanstack/react-query@4.28
+- in main.tsx import :
+
+import {queryClient, QueryClientProviderr} from '@tanstack/react-query
+
+=> using react- query devtools:
+
+npm install @tanstack/react-query-devtools@4.28

@@ -1,34 +1,43 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-
-interface Todo {
-  id: number;
-  title: string;
-  userId: number;
-  completed: boolean;
-}
+import React from "react";
+import useTodos from "./hooks/useTodos";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const TodoList = () => {
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [error, setError] = useState('');
+  const {
+    data: todos,
+    error,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+  } = useTodos();
 
-  useEffect(() => {
-    axios
-      .get('https://jsonplaceholder.typicode.com/todos')
-      .then((res) => setTodos(res.data))
-      .catch((error) => setError(error));
-  }, []);
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>{error.message}</p>;
 
-  if (error) return <p>{error}</p>;
+  const totalTodos = todos?.pages.reduce(
+    (total, page) => total + page.length,
+    0
+  );
 
   return (
-    <ul className="list-group">
-      {todos.map((todo) => (
-        <li key={todo.id} className="list-group-item">
-          {todo.title}
-        </li>
-      ))}
-    </ul>
+    <InfiniteScroll
+      dataLength={totalTodos || 0}
+      next={fetchNextPage}
+      hasMore={!!hasNextPage}
+      loader={<h4>Loading...</h4>}
+    >
+      <ul className="list-group">
+        {todos.pages.map((page, index) => (
+          <React.Fragment key={index}>
+            {page.map((todo) => (
+              <li key={todo.id} className="list-group-item">
+                {todo.title}
+              </li>
+            ))}
+          </React.Fragment>
+        ))}
+      </ul>
+    </InfiniteScroll>
   );
 };
 
